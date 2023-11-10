@@ -1,14 +1,41 @@
 ---
-
 import Layout from '@/layouts/Layout.astro'
-import WebGL from '@/components/WebGL.astro';
-
-
+import WebGL from '@/components/WebGL.astro'
+import Loading from '@/components/Loading.astro'
 ---
 
-<Layout title="takaoka_webdesigner">
+<Layout
+  title="takaoka"
+  description="myportfolios"
+  addtionalClass="fixed"
+  imageUrl="thumbnails/thumb.jpg"
+  domain=""
+>
+  <Loading />
   <WebGL />
 </Layout>
 
 <style lang="scss">
+  body {
+    min-height: 100svh;
+    height: 100svh;
+    overflow: hidden;
+  }
 </style>
+
+<script>
+  import { init } from '@/js/webgl/main'
+  import { Loading } from '@/js/utils/Loading'
+
+  window.addEventListener('load', () => {
+    const loading = new Loading(
+      document.querySelectorAll('#loading'),
+      document.querySelector('#log'),
+      document.querySelector('#progress'),
+      document.querySelector('#counter'),
+      () => {
+        init()
+      },
+    )
+  })
+</script>
