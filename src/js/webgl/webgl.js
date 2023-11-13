@@ -3,9 +3,9 @@ import { gsap } from 'gsap'
 import * as THREE from 'three'
 import { TextureLoader } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { Pane } from 'tweakpane'
 import fragmentShader from './shader/fragment.glsl'
 import vertexShader from './shader/vertex.glsl'
-import * as dat from 'lil-gui'
 
 export function init() {
   const sketch = new Sketch({
@@ -34,14 +34,15 @@ export class Sketch {
     this.time = 0
     this.isPlaying = true
 
-    this.texUrl = ['/textures/square.jpg','/textures/noise.png','/textures/metal.webp']
+    this.texUrl = ['/textures/square.jpg', '/textures/noise.png', '/textures/metal.webp']
     this.textures = []
 
     this.initiate(() => {
       this.setupResize()
       this.addObjects()
       this.addCamera()
-      this.addControls();
+      this.addControls()
+      this.addSettings()
       this.resize()
       this.play()
       this.render()
@@ -62,20 +63,27 @@ export class Sketch {
 
     // texturesを全て読み込んだら実行される
     Promise.all(promises).then(() => {
-      cb.bind(this)()
-      // cb()
+      cb()
     })
   }
 
   /**
    * Initialize GUI settings.
    */
-  settings() {
-    this.settings = {
-      progress: 0,
-    }
-    this.gui = new dat.GUI()
-    this.gui.add(this.settings, 'progress', 0, 1, 0.01)
+  addSettings() {
+    this.pane = new Pane()
+
+    this.pane.addButton({ title: 'play' }).on('click', () => {
+      this.play()
+    })
+    this.pane.addButton({ title: 'stop' }).on('click', () => {
+      this.stop()
+    })
+    window.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'd') {
+        this.pane.hidden = !this.pane.hidden
+      }
+    })
   }
   /**
    * Set up the window resize event listener.
@@ -133,9 +141,9 @@ export class Sketch {
   addCamera() {
     // const fov = 60
     // const fovRad = (fov / 2) * (Math.PI / 180)
-    // this.dist = this.height / 2 / Math.tan(fovRad) 
+    // this.dist = this.height / 2 / Math.tan(fovRad)
     // this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.001, 1000)
-    
+
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.001, 1000)
 
     this.camera.position.set(0, 0, 2)
@@ -194,9 +202,9 @@ export class Sketch {
    * Resume the rendering loop.
    */
   play() {
-    if (!this.isPlaying) {
-      this.render()
+    if (this.isPlaying == false) {
       this.isPlaying = true
+      this.render()
     }
   }
   /**
@@ -209,9 +217,14 @@ export class Sketch {
     const elapsedTime = this.clock.getElapsedTime()
     this.time = elapsedTime
 
+    this.plane.rotation.y = elapsedTime / 2
+
     this.material.uniforms.uTime.value = this.time
-    requestAnimationFrame(this.render.bind(this))
-    
+
     this.renderer.render(this.scene, this.camera)
+
+    requestAnimationFrame(() => {
+      this.render()
+    })
   }
 }
