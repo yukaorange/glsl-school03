@@ -1,10 +1,11 @@
-uniform float time;
-uniform float progress;
-uniform float uXaspect;
-uniform float uYaspect;
-uniform sampler2D uTexture;
+precision mediump float;
 
 varying vec2 vUv;
+
+uniform float uXaspect;
+uniform float uYaspect;
+
+uniform sampler2D uTexture;
 
 void main() {
 

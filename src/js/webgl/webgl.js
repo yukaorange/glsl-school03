@@ -32,6 +32,9 @@ export class Sketch {
 
     this.clock = new THREE.Clock()
     this.time = 0
+    this.timeDelta = 0
+    this.timeScale = 1
+
     this.isPlaying = true
 
     this.texUrl = ['/textures/square.jpg', '/textures/noise.png', '/textures/metal.webp']
@@ -79,6 +82,15 @@ export class Sketch {
     this.pane.addButton({ title: 'stop' }).on('click', () => {
       this.stop()
     })
+
+    this.pane.addButton({ title: 'resetTime' }).on('click', () => {
+      this.resetTime()
+      this.pane.refresh()
+    })
+
+    this.pane.addBinding(this, 'timeScale', { title: 'timeScale', min: 0.01, max: 10 })
+
+
     window.addEventListener('keydown', (e) => {
       if (e.key.toLowerCase() === 'd') {
         this.pane.hidden = !this.pane.hidden
@@ -154,11 +166,17 @@ export class Sketch {
   addControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
   }
+
+  resetTime() {
+    this.time = 0
+    this.timeDelta = 0
+    this.timeScale = 1
+  }
   /**
    * Add objects to the scene.
    */
   addObjects() {
-    this.material = new THREE.ShaderMaterial({
+    this.material = new THREE.RawShaderMaterial({
       extensions: {
         derivatives: '#extension GL_OES_standard_derivatives:',
       },
@@ -214,10 +232,11 @@ export class Sketch {
     if (!this.isPlaying) {
       return
     }
-    const elapsedTime = this.clock.getElapsedTime()
-    this.time = elapsedTime
+    const timeDelta = this.clock.getDelta() * this.timeScale
 
-    this.plane.rotation.y = elapsedTime / 2
+    this.time += timeDelta
+
+    this.plane.rotation.y = this.time / 2
 
     this.material.uniforms.uTime.value = this.time
 
