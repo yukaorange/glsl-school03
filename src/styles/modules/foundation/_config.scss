@@ -1,6 +1,6 @@
 :root {
   --vw: 136.6;
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     --vw: 36;
   }
 
@@ -82,7 +82,7 @@ h4 {
 }
 
 h5 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
 }
 
 p {
@@ -112,7 +112,7 @@ button {
   color: var(--black);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   //モバイル
   h1 {
     font-size: 2rem;

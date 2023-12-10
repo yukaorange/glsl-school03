@@ -8,11 +8,12 @@ import fragmentShader from './shader/fragment.glsl'
 import vertexShader from './shader/vertex.glsl'
 
 export function init() {
-  const sketch = new Sketch({
+  new Sketch({
     dom: document.getElementById('webgl-canvas'),
   })
 }
-export class Sketch {
+
+class Sketch {
   constructor(options) {
     this.scene = new THREE.Scene()
     this.container = options.dom
@@ -90,7 +91,6 @@ export class Sketch {
 
     this.pane.addBinding(this, 'timeScale', { title: 'timeScale', min: 0.01, max: 10 })
 
-
     window.addEventListener('keydown', (e) => {
       if (e.key.toLowerCase() === 'd') {
         this.pane.hidden = !this.pane.hidden
@@ -137,9 +137,9 @@ export class Sketch {
     this.material.uniforms.uXaspect.value = this.Xaspect / this.imageXAspect
     this.material.uniforms.uYaspect.value = this.Yaspect / this.imageYAspect
 
-    // this.camera.aspect = this.width / this.height
-    // this.camera.fov = 2 * (180 / Math.PI) * Math.atan(this.height / (2 * this.dist))
+    this.camera.aspect = this.width / this.height
 
+    // this.camera.fov = 2 * (180 / Math.PI) * Math.atan(this.height / (2 * this.dist))
     // this.plane.scale.x = this.width
     // this.plane.scale.y = this.height
 
@@ -226,11 +226,11 @@ export class Sketch {
     }
   }
   isMobile() {
-  if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
-    return true;
-  } else {
-    return false;
-  }
+    if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
+      return true
+    } else {
+      return false
+    }
   }
   /**
    * Render the scene.
